@@ -1,11 +1,13 @@
 package com.example.usermanagement.service;
 
+import com.example.usermanagement.exception.DuplicateEmailException;
 import com.example.usermanagement.exception.UserNotFoundException;
 import com.example.usermanagement.model.User;
 import com.example.usermanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * Service class responsible for business logic related to {@link User} entities.
@@ -28,14 +30,20 @@ public class UserService {
     }
 
     /**
-     * Registers a new user by saving the provided {@link User} object to the database.
-     * The user's registration date is set to the current time before saving.
+     * Registers a new user in the system.
+     * Checks if the email already exists before saving.
      *
-     * @param user the user to be registered
-     * @return the saved {@link User} object
+     * @param user The user entity to be registered.
+     * @return The saved user entity.
+     * @throws DuplicateEmailException If the email is already registered.
      */
     public User registerUser(User user) {
-        user.setRegistrationDate(LocalDateTime.now());
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+
+        if (existingUser.isPresent()) {
+            throw new DuplicateEmailException("Email already exists: " + user.getEmail());
+        }
+
         return userRepository.save(user);
     }
 
