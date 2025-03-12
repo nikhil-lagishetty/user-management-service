@@ -1,6 +1,5 @@
 package com.example.usermanagement.controller;
 
-
 import com.example.usermanagement.dto.UserRegistrationDTO;
 import com.example.usermanagement.model.User;
 import com.example.usermanagement.service.UserService;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
-
-
     private final UserService userService;
 
     @Autowired
@@ -23,16 +20,24 @@ public class UserController {
         this.userService = userService;
     }
 
-
-    @PostMapping
-    public ResponseEntity<User> registerUser(
+    @PostMapping("/createUser")
+    public ResponseEntity<?> registerUser(
             @Valid @RequestBody UserRegistrationDTO userDTO,
             @RequestParam(name = "notification", defaultValue = "email") String notification) {
+
         User user = convertToUser(userDTO);
         user.setNotificationPreference(notification);
-
         User savedUser = userService.registerUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
+
+    @GetMapping("/getUserById/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable String id) {
+        User user = userService.getUserById(id);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        return ResponseEntity.ok(user);
     }
 
     private User convertToUser(UserRegistrationDTO dto) {
@@ -44,12 +49,4 @@ public class UserController {
         user.setPhone(dto.getPhone());
         return user;
     }
-
-
-    @GetMapping("/getUserById/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
-        User user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
-    }
 }
-

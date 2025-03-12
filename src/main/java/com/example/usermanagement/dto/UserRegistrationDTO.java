@@ -2,22 +2,30 @@ package com.example.usermanagement.dto;
 
 import com.example.usermanagement.validation.CountryFrance;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserRegistrationDTO {
-    @NotBlank(message = "Name is mandatory")
+
+
+    @NotBlank(message = "Name is required")
     private String name;
 
     @Min(value = 18, message = "Age must be at least 18")
     private int age;
 
-    @CountryFrance
+    @NotBlank(message = "Country is required")
     private String country;
 
     @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
     private String email;
 
-    @Pattern(regexp = "^\\+?[0-9\\-\\s]+$", message = "Invalid phone number")
+    @NotBlank(message = "Phone number is required")
     private String phone;
+
 }
