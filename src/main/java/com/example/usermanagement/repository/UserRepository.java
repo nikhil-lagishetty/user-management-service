@@ -24,12 +24,5 @@ public interface UserRepository extends MongoRepository<User, String> {
      */
     Optional<User> findByEmail( String email);
 
-    /**
-     * Finds a user by their ID.
-     *
-     * @param id the unique identifier of the user
-     * @return the user with the given ID, or {@code null} if no user was found
-     */
-    // MongoRepository provides built-in CRUD methods, including findById, so no need to define find method here.
 
 }
